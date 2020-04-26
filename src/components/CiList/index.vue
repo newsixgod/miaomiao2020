@@ -1,20 +1,23 @@
 <template>
     <div class="cinema_body">
-        <ul>
-            <li v-for="item in cinemaList" :key="item.id">
-                <div>
-                    <span>{{ item.nm }}</span>
-                    <span class="q"><span class="price">{{ item.sellPrice }}</span> 元起</span>
-                </div>
-                <div class="address">
-                    <span>{{ item.addr }}</span>
-                    <span>{{ item.distance }}</span>
-                </div>
-                <div class="card">
-                    <div v-for="(num,key) in item.tag" v-if="num===1" :key="key" :class=" key | classCard ">{{ key | formatCard }}</div>
-                </div>
-            </li>
-        </ul>
+        <Loading v-if="isLoading" />
+        <Scroller v-else>
+            <ul>
+                <li v-for="item in cinemaList" :key="item.id">
+                    <div>
+                        <span>{{ item.nm }}</span>
+                        <span class="q"><span class="price">{{ item.sellPrice }}</span> 元起</span>
+                    </div>
+                    <div class="address">
+                        <span>{{ item.addr }}</span>
+                        <span>{{ item.distance }}</span>
+                    </div>
+                    <div class="card">
+                        <div v-for="(num,key) in item.tag" v-if="num===1" :key="key" :class=" key | classCard ">{{ key | formatCard }}</div>
+                    </div>
+                </li>
+            </ul>
+        </Scroller>
     </div>
 </template>
 
@@ -24,14 +27,20 @@ export default {
     data(){
         return {
             cinemaList : [],
+            isLoading : true,
+            prevCityId : -1   // 记录切换好的城市(即本页面的数据属于哪个城市的)
         };
     },
     activated(){
-
-        this.axios.get('/api/cinemaList?cityId=10').then((res)=>{
+        var cityId = this.$store.state.city.id;   
+        if( this.prevCityId === cityId ){ return; }  // 如果切换好的城市跟现在要切换的城市不一样就重新获取数据(即你点击了城市切换)
+        this.isLoading = true;
+        this.axios.get('/api/cinemaList?cityId='+cityId).then((res)=>{
             var msg = res.data.msg;
             if(msg === 'ok'){
                 this.cinemaList = res.data.data.cinemas;
+                this.isLoading = false;
+                this.prevCityId = cityId;  
             }
         });
     },
