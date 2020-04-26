@@ -55,8 +55,9 @@ export default {
         // 理解为发送请求如果请求还没回来，那么 that.source = c    如果 that.source = c 就终止请求
         message(newVal){
             var that = this;
+            var cityId = this.$store.state.city.id;   
             this.cancelRequest();
-            this.axios.get('/api/searchList?cityId=10' +'&kw='+newVal,{
+            this.axios.get('/api/searchList?cityId='+cityId +'&kw='+newVal,{
                 cancelToken: new this.axios.CancelToken(function(c){
                     that.source = c;
                 })
