@@ -20,6 +20,7 @@
                 </keep-alive>
             </div>
         <TabBar />
+        <!-- 引入注册使用它，这里用命名视图规定显示哪个路由组件  多个 router-view -->
         <router-view name="detail" />
     </div>
 </template>
@@ -37,6 +38,7 @@ export default {
         TabBar
     },
     mounted(){
+
         setTimeout(()=>{
             this.axios.get('/api/getLocation').then((res)=>{
                 var msg = res.data.msg;
@@ -58,11 +60,12 @@ export default {
                     });
                 }
             });
-        },1500);
+        },3000);
         
     }
 }
 </script>
+
 <style scoped>
     #content .movie_menu{ width: 100%; height: 45px; border-bottom:1px solid #e6e6e6; display: flex; justify-content:space-between; align-items:center; background:white; z-index:10;}
     .movie_menu .city_name{ margin-left: 20px; height:100%; line-height: 45px;}
